@@ -1,4 +1,4 @@
-# Sprawozdanie 1 - Wojciech Smolarczyk, Wiktoria Zalińsk
+# Sprawozdanie 1 - Wojciech Smolarczyk, Wiktoria Zalińska
 
 ```python
 def traditional_multiply_matrix(A, B):
