@@ -1,4 +1,4 @@
-# Sprawozdanie 1 - Wojciech Smolarczyk, Wiktoria Zalińsk
+# Sprawozdanie 1 - Wojciech Smolarczyk, Wiktoria Zalińska
 
 ```python
 def traditional_multiply_matrix(A, B):
@@ -105,7 +105,7 @@ Alogrytm na początku sprawdza czy macierze otrzymane jako argumenty są większ
 
 ![alt text](image.png)
 
-Co naturalne im większe tablice wejściowe tym więcej operacji należy wykonać. Im mniejsze jest "l" tym później (niżej) przełączamy się na tradcyjne mnożenie macierzy. Zauważalne różnice widać przy rozmiarze tablic 2^8, a różnica w liczbie operacji jest ogromna gry rozmiar tablicy przekracza 2^10. Warto również zauważyć na relatywnie małe różnice pomiędzy wynikami dla l=3 i l=5.
+Co naturalne im większe tablice wejściowe tym więcej operacji należy wykonać. Im mniejsze jest "l" tym później (niżej) przełączamy się na tradcyjne mnożenie macierzy. Zauważalne różnice widać przy rozmiarze tablic 2^8, a różnica w liczbie operacji jest ogromna gry rozmiar tablicy przekracza 2^10. Warto również zauważyć na relatywnie małe różnice pomiędzy wynikami dla l=3 i l=7.
 
 ![alt text](image-1.png)
 
