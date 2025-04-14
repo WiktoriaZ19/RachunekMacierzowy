@@ -36,6 +36,22 @@ Wskaźnik uwarunkowania jest cechą problemu i jest niezależny od numerycznych 
 
   ![alt text](image-5.png)
 
+- Norma macierzowa ∥A∥1
+
+  ![alt text](norma_1.png)
+
+- Współczynnik uwarunkowania macierzy ∥A∥1
+
+  ![alt text](cond_1.png)
+
+- Norma macierzowa ∥A∥p 
+
+  ![alt text](norma_p.png)
+
+- Współczynnik uwarunkowania macierzy ∥A∥p
+
+  ![alt text](cond_p.png)
+
 ## Implementacja
 
 - Odwracanie macierzy
@@ -115,6 +131,53 @@ def wspl_warunkowyAinf(M):
         return "Macierz jest osobliwa (wyznacznik = 0)"
 ```
 
+
+- Norma macierzowa ∥A∥1
+
+```python
+def matrix_norm_1(A):
+    sum_col = np.zeros(A.shape[1])
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            sum_col[j] += abs(A[i, j])
+    return max(sum_col)
+```
+
+- Współczynnik uwarunkowania macierzy ∥A∥1
+
+```python
+def cond_1(A):
+    try: 
+        A_inv = macierz_odwrotna(A)
+        return matrix_norm_1(A) * matrix_norm_1(A_inv)
+    except np.linalg.LinAlgError:
+        print("Matrix is singular, cannot compute condition number.")
+        return None   
+```
+
+- Norma macierzowa ∥A∥p
+
+```python
+def matrix_norm_p(A, p):
+    result = 0
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            result += abs(A[i, j]) ** p
+    return result ** (1 / p)
+```
+
+- Współczynnik uwarunkowania macierzy ∥A∥p
+
+```python
+def cond_p(A, p):
+    try: 
+        A_inv = macierz_odwrotna(A)
+        return matrix_norm_p(A, p) * matrix_norm_p(A_inv, p)
+    except np.linalg.LinAlgError:
+        print("Matrix is singular, cannot compute condition number.")
+        return None  
+```
+
 ### Wyniki
 
 ```python
@@ -140,3 +203,28 @@ wspl_warunkowyAinf(np.array([[1000, 999], [999, 998]]))
 ```
 
 np.float64(3996001.000094493)
+
+
+```python
+matrix_norm_1(np.array([[1, 2], [3, 4]]))
+```
+
+6.0
+
+```python
+cond_1(np.array([[1000, 999], [999, 998]]))
+```
+
+3996001.000094493
+
+```python
+matrix_norm_p(np.array([[1, 2], [3, 4]]), p=2)
+```
+
+5.477225575051661
+
+```python
+cond_p(np.array([[1000, 999], [999, 998]]), p=2)
+```
+
+3992006.000094398
