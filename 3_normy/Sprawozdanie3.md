@@ -10,7 +10,8 @@ Norma macierzowa to uogólnienie pojęcia normy wektorowej na macierze. Jest to 
 
 - Nieujemność: ∥M∥≥0
 - Jednorodność ∥αM∥ = |α| \* ∥M∥ dla skalara α
--
+- Nierówność trójkąta ∥M+N∥ ≤ ∥M∥+∥N∥
+- Sub multiplikatywność ∥M \* N∥ ≤ ∥M∥ \* ∥N∥
 
 ## Wskaźnik (współczynnik) uwarunkowania
 
@@ -44,7 +45,7 @@ Wskaźnik uwarunkowania jest cechą problemu i jest niezależny od numerycznych 
 
   ![alt text](cond_1.png)
 
-- Norma macierzowa ∥A∥p 
+- Norma macierzowa ∥A∥p
 
   ![alt text](norma_p.png)
 
@@ -131,7 +132,6 @@ def wspl_warunkowyAinf(M):
         return "Macierz jest osobliwa (wyznacznik = 0)"
 ```
 
-
 - Norma macierzowa ∥A∥1
 
 ```python
@@ -147,12 +147,12 @@ def matrix_norm_1(A):
 
 ```python
 def cond_1(A):
-    try: 
+    try:
         A_inv = macierz_odwrotna(A)
         return matrix_norm_1(A) * matrix_norm_1(A_inv)
     except np.linalg.LinAlgError:
         print("Matrix is singular, cannot compute condition number.")
-        return None   
+        return None
 ```
 
 - Norma macierzowa ∥A∥p
@@ -170,12 +170,12 @@ def matrix_norm_p(A, p):
 
 ```python
 def cond_p(A, p):
-    try: 
+    try:
         A_inv = macierz_odwrotna(A)
         return matrix_norm_p(A, p) * matrix_norm_p(A_inv, p)
     except np.linalg.LinAlgError:
         print("Matrix is singular, cannot compute condition number.")
-        return None  
+        return None
 ```
 
 ### Wyniki
@@ -186,11 +186,15 @@ norma_macierzowaA2([[1, 2], [3, 4]])
 
 np.float64(5.372281323269014)
 
+![alt text](image.png)
+
 ```python
 wspl_warunkowyA2(np.array([[1000, 999], [999, 998]]))
 ```
 
 np.float64(3992006.000094148)
+
+![alt text](image-6.png)
 
 ```python
 norma_macierzowaAinf([[1, 2], [3, 4]])
@@ -203,7 +207,6 @@ wspl_warunkowyAinf(np.array([[1000, 999], [999, 998]]))
 ```
 
 np.float64(3996001.000094493)
-
 
 ```python
 matrix_norm_1(np.array([[1, 2], [3, 4]]))
