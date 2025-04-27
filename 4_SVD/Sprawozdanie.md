@@ -2,12 +2,141 @@
 
 # Wojciech Smolarczyk, Wiktoria Zalińska
 
+## SVD - Singular Value Decomposition 
+Rozkład według wartości osobliwych polega na przedstawieniu dowolnej macierzy prostokątnej $A \in R^{n \times m}$ jako iloczynu trzech macierzy:
+$$
+A = USV^T,
+$$
+
+gdzie:
+
+- $U \in R^{n \times n}$ - macierz ortogonalna ($U^T = U^{-1}$), zawierająca lewe wektory osobliwe - wektory własne $AA^T$,
+
+- $S \in R^{n \times m}$ - macierz wartości osobliwych,
+
+- $V \in R^{m \times m}$ - macierz ortogonalna ($V^T = V^{-1}$), zawierająca prawe wektory osobliwe - wektory własne $A^TA$.
+
+
+Dzięki zastosowaniu SVD:
+
+- można stabilnie rozwiązywać układy równań, nawet jeśli macierz jest osobliwa,
+
+- wyznaczyć najlepiej dopasowane przybliżenie macierzy,
+
+- analizować rangę, obraz i jądro macierzy.
+
+
+## Kroki dekompozycji:
+### Krok 1. Rozważana macierz A ma postać:
 ```python
 A = np.array([[2, 2, 1, 3], [7, 8, 2, 8], [5, 0, 8, 7], [3, 5, 6, 3], [6, 9, 8, 4]])
 n, m = A.shape
-
-
 ```
+[[2 2 1 3]
+
+ [7 8 2 8]
+
+ [5 0 8 7]
+
+ [3 5 6 3]
+
+ [6 9 8 4]]
+
+### Krok 2. Macierz $AA^T$
+ ```python
+AAT = np.dot(A, A.T)
+ ```
+ AAT = 
+ [[ 18  56  39  31  50]
+
+ [ 56 181 107  97 162]
+
+ [ 39 107 138  84 122]
+
+ [ 31  97  84  79 123]
+
+ [ 50 162 122 123 197]]
+
+AAT shape =  (5, 5)
+
+Otrzymano macierz $n \times n$ (u nas $5 \times 5$).
+
+### Krok 3. Wartości i wektory własne macierzy $AA^T$
+```python
+eigenvalues, eigenvectors = np.linalg.eig(AAT)
+
+idx = np.argsort(eigenvalues)[::-1]
+eigenvalues = eigenvalues[idx]
+eigenvectors = eigenvectors[:, idx]
+U = eigenvectors
+```
+Eigenvalues =  [ 5.27198727e+02  5.22965267e+01  3.29123797e+01  5.92366606e-01
+ -2.64827854e-16]
+
+Eigenvectors = 
+
+ [[ 0.17354228  0.06750887  0.23303841 -0.4040119  -0.86475032]
+
+ [ 0.54275123  0.5240643   0.58684982  0.03444987  0.29188733]
+
+ [ 0.43235249 -0.83173678  0.31478192  0.14364195  0.03955483]
+
+ [ 0.37272532 -0.07348099 -0.39457998 -0.77167806  0.3232584 ]
+
+ [ 0.5911441   0.15366728 -0.58865896  0.46847364 -0.24687667]]
+
+Shape of eigenvectors (U) =  (5, 5)
+
+Otrzymaliśmy macierz U o wymairach $n \times n$.
+
+### Krok 4. Macierz diagonalna S taka że $S_{ii}= \sqrt{λ_i}$
+ ```python
+ S = np.zeros((n, m))
+for i in range(min(n, m)):
+    S[i, i] = np.sqrt(eigenvalues[i]) if eigenvalues[i] > 1e-10 else 0.0
+```
+S = 
+ [[22.9608085   0.          0.          0.        ]
+
+ [ 0.          7.23163375  0.          0.        ]
+
+ [ 0.          0.          5.73693121  0.        ]
+
+ [ 0.          0.          0.          0.76965356]
+
+ [ 0.          0.          0.          0.        ]]
+
+S shape =  (5, 4)
+
+### Krok 5. Obliczenie macierzy V z własności: $V=A^TUS^{-1}$
+```python
+S_inv = np.zeros_like(S)
+for i in range(m):
+    if S[i, i] > 1e-10:
+        S_inv[i, i] = 1.0 / S[i, i]
+
+V = A.T @ U @ S_inv
+```
+V.T = 
+
+ [[ 0.47790765  0.51709929  0.50883963  0.49527247]
+
+ [ 0.047893    0.73885555 -0.65680932 -0.14282946]
+
+ [ 0.24965289 -0.36778463 -0.54938051  0.70752311]
+
+ [ 0.84082339 -0.22679343 -0.08868373 -0.48344179]]
+
+### Krok 6. Rekonstrukcja macierzy A
+```python
+reconstructed_A_v1 = U @ S @ V.T
+```
+array([[2.00000000e+00, 2.00000000e+00, 1.00000000e+00, 3.00000000e+00],
+       [7.00000000e+00, 8.00000000e+00, 2.00000000e+00, 8.00000000e+00],
+       [5.00000000e+00, 5.86468211e-15, 8.00000000e+00, 7.00000000e+00],
+       [3.00000000e+00, 5.00000000e+00, 6.00000000e+00, 3.00000000e+00],
+       [6.00000000e+00, 9.00000000e+00, 8.00000000e+00, 4.00000000e+00]])
+
 
 ### Krok 7
 
@@ -90,28 +219,54 @@ U = [U_1 U_2 ... U_m]:\
 ```python
 reconstructed_A = U @ S @ V.T
 print(
-    "\nReconstructed A :\n",
+    "\nStep 12: Reconstructed A (should match original A):\n",
+    "Using AAT decomposition:\n",
+    reconstructed_A_v1,
+    "\n\n",
+    "Using ATA decomposition:\n",
     reconstructed_A,
     "\n\n",
+    "Original A:\n",
     A,
 )
 
-
-### Wiktoria tutaj daj swój wynik dekompozycji
 ```
 
-Reconstructed A (should match original A):\
- [[0.04947759 0.81811934 0.7883919  0.60408366]\
- [0.19956419 0.21971753 0.07282224 0.49019101]\
- [0.45073204 0.10379424 0.72024798 0.78083499]\
- [0.54020983 0.2094221  0.39908469 0.02106216]\
- [0.12990275 0.15128147 0.15548295 0.33681011]]
+Step 12: Reconstructed A (should match original A):
+ Using AAT decomposition:
 
-[[0.04947759 0.81811934 0.7883919  0.60408366]\
- [0.19956419 0.21971753 0.07282224 0.49019101]\
- [0.45073204 0.10379424 0.72024798 0.78083499]\
- [0.54020983 0.2094221  0.39908469 0.02106216]\
- [0.12990275 0.15128147 0.15548295 0.33681011]]
+ [[2.00000000e+00 2.00000000e+00 1.00000000e+00 3.00000000e+00]
+
+ [7.00000000e+00 8.00000000e+00 2.00000000e+00 8.00000000e+00]
+
+ [5.00000000e+00 5.86468211e-15 8.00000000e+00 7.00000000e+00]
+
+ [3.00000000e+00 5.00000000e+00 6.00000000e+00 3.00000000e+00]
+
+ [6.00000000e+00 9.00000000e+00 8.00000000e+00 4.00000000e+00]] 
+
+ Using ATA decomposition:
+ [[ 2.00000000e+00  2.00000000e+00  1.00000000e+00  3.00000000e+00]
+
+ [ 7.00000000e+00  8.00000000e+00  2.00000000e+00  8.00000000e+00]
+
+ [ 5.00000000e+00 -1.77635684e-15  8.00000000e+00  7.00000000e+00]
+
+ [ 3.00000000e+00  5.00000000e+00  6.00000000e+00  3.00000000e+00]
+
+ [ 6.00000000e+00  9.00000000e+00  8.00000000e+00  4.00000000e+00]] 
+
+ Original A:
+
+ [[2 2 1 3]
+
+ [7 8 2 8]
+
+ [5 0 8 7]
+
+ [3 5 6 3]
+
+ [6 9 8 4]]
 
 ### Krok 13
 
