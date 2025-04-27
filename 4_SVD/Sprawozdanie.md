@@ -16,6 +16,7 @@ gdzie:
 
 - $V \in R^{m \times m}$ - macierz ortogonalna ($V^T = V^{-1}$), zawierająca prawe wektory osobliwe - wektory własne $A^TA$.
 
+Rozkład SVD isnieje dla każdej macierzy rzeczywistej - niezależnie od jej wymiaru i rangi.
 
 Dzięki zastosowaniu SVD:
 
@@ -24,6 +25,24 @@ Dzięki zastosowaniu SVD:
 - wyznaczyć najlepiej dopasowane przybliżenie macierzy,
 
 - analizować rangę, obraz i jądro macierzy.
+
+**Ranga i jądro macierzy**
+
+Ranga macierzy $A$, oznaczana jako $\text{rank}(A)$ - to liczba niezerowych wartości osobliwych $\sigma_i$.
+
+Obraz macierzy $A$ (czyli zbiór wszystkich możliwych wektorów $A\mathbf{x}$) jest generowany przez kolumny $U$ odpowiadające niezerowym wartościom osobliwym.
+
+Jądro (przestrzeń rozwiązań układu $A\mathbf{x} = 0$) jest związane z kolumnami $V$ odpowiadającymi zerowym wartościom osobliwym.
+
+Między wymiarem przestrzeni obrazu a jądra zachodzi następująca zależność:
+
+$$dim(R(A)) + dim((N(A))) = m,$$
+
+gdzie:
+
+- $dim(R(A))$ - wymiar obrazu (ranga A)
+
+- $dim((N(A)))$ - wymiar jądra - liczba niezależnych rozwiązań układu $A\mathbf{x} = 0$.
 
 
 ## Kroki dekompozycji:
@@ -41,6 +60,8 @@ n, m = A.shape
  [3 5 6 3]
 
  [6 9 8 4]]
+
+## Rozkład przez $AA^T$
 
 ### Krok 2. Macierz $AA^T$
  ```python
@@ -138,6 +159,8 @@ array([[2.00000000e+00, 2.00000000e+00, 1.00000000e+00, 3.00000000e+00],
        [6.00000000e+00, 9.00000000e+00, 8.00000000e+00, 4.00000000e+00]])
 
 
+## Rozkład przez $A^TA$
+
 ### Krok 7
 
 Proszę obliczyć i wypisać/narysować macierz ATA(mxm)
@@ -163,12 +186,17 @@ print(V)
 ```
 
 Eigenvalues (λ_i) of A^T A:
+
 [430.73196147 59.91931837 6.26331361 20.08540655]
 
 Eigenvectors (V_i) of A^T A (columns):
+
 [[0.61815934  0.29989507  0.57592274  0.44300674]
+
  [ 0.44206838 -0.10849764  0.24128459 -0.85707967]
+
  [ 0.56014362 -0.65084557 -0.45039358  0.24450931]
+
  [ 0.32968729  0.68897842 -0.63815387 -0.09682286]]
 
 ### Krok 9
